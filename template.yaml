@@ -1,0 +1,125 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  WOA - Wake On Alexa. Alexa Smart Home skill backend that wakes computers
+  with Wake on LAN through the user's Echo. Sized to stay in the AWS free tier.
+
+Parameters:
+  SkillId:
+    Type: String
+    Description: Alexa skill ID (amzn1.ask.skill....). Only this skill can invoke the backend.
+    AllowedPattern: "amzn1\\.ask\\.skill\\.[0-9a-f-]+"
+  LwaClientId:
+    Type: String
+    Description: Login with Amazon security profile client ID (used for account linking and the setup page).
+  AlexaClientId:
+    Type: String
+    Description: Skill > Permissions > Send Alexa Events > Alexa Skill Messaging client ID.
+  AlexaClientSecret:
+    Type: String
+    NoEcho: true
+    Description: Skill > Permissions > Send Alexa Events > Alexa Skill Messaging client secret.
+  SetupPageOrigin:
+    Type: String
+    Default: https://ccccri.github.io
+    Description: Origin of the configuration page allowed to call the API (CORS).
+  GatewayOrder:
+    Type: String
+    Default: EU,NA,FE
+    Description: Alexa Event Gateway regions to try, in order, for users whose region is not known yet.
+
+Globals:
+  Function:
+    Runtime: python3.14
+    Architectures: [arm64]
+    MemorySize: 128
+    CodeUri: src/
+    Environment:
+      Variables:
+        TABLE_NAME: !Ref Table
+        LWA_CLIENT_ID: !Ref LwaClientId
+        GATEWAY_ORDER: !Ref GatewayOrder
+
+Resources:
+  # Provisioned capacity within the always-free DynamoDB tier (25 RCU / 25 WCU).
+  Table:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      TableName: !Sub "${AWS::StackName}-data"
+      BillingMode: PROVISIONED
+      ProvisionedThroughput: {ReadCapacityUnits: 5, WriteCapacityUnits: 5}
+      AttributeDefinitions:
+        - {AttributeName: pk, AttributeType: S}
+        - {AttributeName: sk, AttributeType: S}
+      KeySchema:
+        - {AttributeName: pk, KeyType: HASH}
+        - {AttributeName: sk, KeyType: RANGE}
+      TimeToLiveSpecification: {AttributeName: ttl, Enabled: true}
+      SSESpecification: {SSEEnabled: true}
+
+  SkillFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-skill"
+      Description: WOA Alexa Smart Home skill handler
+      Handler: woa.skill_handler.lambda_handler
+      Timeout: 20
+      Environment:
+        Variables:
+          ALEXA_CLIENT_ID: !Ref AlexaClientId
+          ALEXA_CLIENT_SECRET: !Ref AlexaClientSecret
+      Policies:
+        - DynamoDBCrudPolicy: {TableName: !Ref Table}
+        - Statement:
+            - Effect: Allow
+              Action: lambda:InvokeFunction
+              Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${AWS::StackName}-skill"
+      Events:
+        Alexa:
+          Type: AlexaSkill
+          Properties:
+            SkillId: !Ref SkillId
+
+  SkillFunctionLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${AWS::StackName}-skill"
+      RetentionInDays: 14
+
+  # API for the configuration page, exposed with a free Lambda Function URL.
+  WebFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-web"
+      Description: WOA configuration page API
+      Handler: woa.web_handler.lambda_handler
+      Timeout: 15
+      Environment:
+        Variables:
+          ALEXA_CLIENT_ID: !Ref AlexaClientId
+          ALEXA_CLIENT_SECRET: !Ref AlexaClientSecret
+      Policies:
+        - DynamoDBCrudPolicy: {TableName: !Ref Table}
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins: [!Ref SetupPageOrigin]
+          AllowMethods: [GET, POST, DELETE]
+          AllowHeaders: [authorization, content-type]
+          MaxAge: 3600
+
+  WebFunctionLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${AWS::StackName}-web"
+      RetentionInDays: 14
+
+Outputs:
+  SkillFunctionArn:
+    Description: Paste this ARN as the Smart Home skill "Default endpoint".
+    Value: !GetAtt SkillFunction.Arn
+  ApiUrl:
+    Description: Put this URL in docs/config.js (apiUrl).
+    Value: !GetAtt WebFunctionUrl.FunctionUrl

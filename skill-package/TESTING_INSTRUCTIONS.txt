@@ -1,0 +1,16 @@
+WOA is a Smart Home skill that wakes computers with the Alexa.WakeOnLANController interface. It has no voice model of its own; it uses the standard Smart Home "turn on" utterances.
+
+Setup for testing:
+1. Enable the skill and complete account linking (Login with Amazon, scope profile:user_id).
+2. Open https://ccccri.github.io/woa/setup.html and sign in with the SAME Amazon account used for account linking.
+3. Add a computer, e.g. name "test computer", MAC "C8:7F:54:0B:30:C5" (any valid unicast MAC is accepted). The device is pushed to Alexa with AddOrUpdateReport; you can also say "Alexa, discover devices".
+
+What to test:
+- "Alexa, turn on test computer": the skill answers TurnOn with a DeferredResponse, then sends Alexa.WakeOnLANController.WakeUp and the final Alexa.Response to the event gateway. A supported Echo on the same LAN broadcasts the Wake on LAN packet to the MAC address. A real wake-up requires a Wake-on-LAN capable computer on the tester's network.
+- "Alexa, turn off test computer": not supported by design (Wake on LAN can only power on); the skill returns NOT_SUPPORTED_IN_CURRENT_MODE.
+- Removing the computer on the setup page sends DeleteReport, so it disappears from the Alexa app.
+- "Delete all my data" on the setup page removes all stored data.
+
+The power state is not retrievable (the skill cannot know whether the computer is on), so the device declares powerState with retrievable=false. ReportState returns EndpointHealth connectivity only.
+
+Source code: https://github.com/ccccri/woa

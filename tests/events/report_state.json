@@ -1,0 +1,10 @@
+{
+  "directive": {
+    "header": {"namespace": "Alexa", "name": "ReportState", "payloadVersion": "3",
+               "messageId": "a7a6ea2a-2b1b-4c35-9b2a-2c5e0a1b9e00",
+               "correlationToken": "corr-token"},
+    "endpoint": {"scope": {"type": "BearerToken", "token": "user-token"},
+                 "endpointId": "woa-0123456789abcdef", "cookie": {}},
+    "payload": {}
+  }
+}

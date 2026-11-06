@@ -1,0 +1,13 @@
+{
+  "accountLinkingRequest": {
+    "type": "AUTH_CODE",
+    "authorizationUrl": "https://www.amazon.com/ap/oa",
+    "accessTokenUrl": "https://api.amazon.com/auth/o2/token",
+    "accessTokenScheme": "HTTP_BASIC",
+    "clientId": "amzn1.application-oa2-client.REPLACE_ME",
+    "clientSecret": "REPLACE_ME",
+    "scopes": ["profile:user_id"],
+    "domains": [],
+    "defaultTokenExpirationInSeconds": 3600
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "directive": {
+    "header": {"namespace": "Alexa.PowerController", "name": "TurnOff", "payloadVersion": "3",
+               "messageId": "4a4f8d4c-4a3f-4f60-9d8b-0f6d0f7c9c11",
+               "correlationToken": "corr-token"},
+    "endpoint": {"scope": {"type": "BearerToken", "token": "user-token"},
+                 "endpointId": "woa-0123456789abcdef", "cookie": {}},
+    "payload": {}
+  }
+}
