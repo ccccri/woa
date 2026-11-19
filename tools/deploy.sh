@@ -36,10 +36,12 @@ if [ -z "$ALEXA_CLIENT_SECRET" ]; then
   exit 1
 fi
 
-if [ -z "${ALERT_EMAIL:-}" ]; then
+ALERT_EMAIL="${ALERT_EMAIL:-}"
+while [[ ! "$ALERT_EMAIL" =~ ^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$ ]]; do
   echo
-  read -r -p "Email for cost alerts (AWS sends one confirmation mail, click the link): " ALERT_EMAIL
-fi
+  echo "Type the email that should receive cost alerts (it cannot be empty)."
+  read -r -p "Alert email: " ALERT_EMAIL
+done
 
 sam deploy \
   --template-file template.yaml \

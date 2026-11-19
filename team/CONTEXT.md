@@ -37,8 +37,8 @@ the account to use on the WOA setup page (same LWA user_id).
 | Type | **New AWS experience** ("project"), signed up with a social login; managed SCP/RCP guardrails |
 | Account ID | not written here (public repo): `aws sts get-caller-identity --profile woa` |
 | Project Region | **eu-north-1** (Stockholm), assigned from the contact country, cannot be changed |
-| Other Regions | Denied by the `RegionFloor` SCP except us-east-1 and us-west-2 |
-| Plan | FREE, USD 100 credits, expires **2027-05-19** (then Paid Plan upgrade required, irreversible) |
+| Other Regions | `RegionFloor` SCP allows eu-north-1, eu-west-1 (added), us-east-1/us-west-2 for global services |
+| Plan | **Paid Plan** since 2026-11-19 (USD 140 credits left); advanced features active |
 | CLI | AWS CLI 2.41.1 in `~/.local/bin`, profile **`woa`** via `aws login` (12 h, renews up to 90 days) |
 | SAM CLI | 1.173.0, installed with `uv tool install aws-sam-cli` |
 | Agent Toolkit | 25 skills in `~/.claude/skills` and `~/.agents/skills`; MCP server `aws-mcp` for Claude Code (`~/.claude.json`) and OpenCode (`~/.config/opencode/opencode.json`), env `AWS_MCP_PROXY_PROFILES=woa`; auto-update off |
@@ -61,8 +61,16 @@ Check the plan with `aws freetier get-account-plan-state --profile woa`.
 | Permissions | Send Alexa Events ON; Alexa (skill messaging) Client ID `amzn1.application-oa2-client.5212b8e810a94865a5a5c5d07e2edf60` |
 | Endpoint, account linking | Being set (USER_STEPS Part 2) |
 
-Deployment history: 2026-11-19 stack `woa` in eu-north-1 worked but the Alexa console rejected the
-ARN; deleted the same day (D-016). Target now: eu-west-1 after the account unlock (T-19).
+**Current deployment (2026-11-19): stack `woa` in eu-west-1** via `tools/deploy.sh`.
+- Skill Lambda ARN: `arn:aws:lambda:eu-west-1:<account>:function:woa-skill`
+- API: `https://lbi3axdp6zsagsn7ecg4q2qsk40dyglx.lambda-url.eu-west-1.on.aws`
+- Cost guard: budget `woa-cost-guard` (1 USD, credits excluded), SNS `woa-cost-alerts`, `woa-killswitch`.
+- AWS account after T-19: Paid Plan, advanced features ON (org admin; management account is a
+  separate "WOA Management Account"; spend limit gone; 3 early cost controls were enabled before
+  activation). SCP `AdvancedModeRegionRestrictionSecurityControlPolicy`, statement `RegionFloor`:
+  added `eu-west-1` (only change; took ~2 min to apply to Lambda).
+
+History: the same day a stack in eu-north-1 was rejected by the Alexa console and deleted (D-016).
 Old eu-north-1 details, for reference only:
 - Skill Lambda: `woa-skill` (ARN = `arn:aws:lambda:eu-north-1:<account>:function:woa-skill`)
 - API (setup page): `https://ofac2ixfi2p6ug3mvkm2lofdti0hnntt.lambda-url.eu-north-1.on.aws`

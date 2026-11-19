@@ -33,7 +33,7 @@ Status: `[x]` done · `[ ]` to do · `[~]` in progress · `[!]` blocked. Owner: 
 - [ ] T-13 user — Decide: keep the name "WOA: Wake On Alexa" or use a fallback (see DECISIONS D-011).
 
 ### To do (agents)
-- [ ] T-19 user + agent — Paid Plan upgrade + advanced features + SCP RegionFloor += eu-west-1 (D-016),
+- [x] T-19 user + agent — (done 2026-11-19) Paid Plan upgrade + advanced features + SCP RegionFloor += eu-west-1 (D-016),
       redeploy to eu-west-1 with the cost guard, update `docs/config.js` apiUrl, push.
 - [ ] T-18 user — Before publishing: reset the LWA client secret (a fragment was exposed to an agent tool on 2026-11-19), then update account linking.
 - [x] T-17 agent + user — (done: Stockholm REJECTED by Alexa, see D-016) First deploy in **eu-north-1** (D-013) and check that the Alexa console
