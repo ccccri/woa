@@ -38,7 +38,7 @@ no Raspberry Pi, no app on the PC, no open ports.
    second asynchronous invocation of the same Lambda.
 
 The gateway must match the region of the user's Alexa account. WOA runs one backend (the reference deployment
-is in `eu-north-1`), tries the EU gateway first and falls back to NA/FE when the gateway answers
+is in `eu-west-1`), tries the EU gateway first and falls back to NA/FE when the gateway answers
 `SKILL_NEVER_ENABLED_EXCEPTION`, then remembers the right region for that user.
 
 ## Working on WOA (humans and AI agents)
@@ -70,7 +70,9 @@ decisions, context, architecture and the step-by-step guide for account setup
 Everything fits the AWS **always-free** tier for a hobby-sized skill: Lambda (1M requests/month),
 DynamoDB with provisioned capacity (5 RCU/5 WCU of the free 25/25), Lambda Function URL instead of
 API Gateway, CloudWatch logs kept 14 days. Login with Amazon and GitHub Pages are free.
-The only paid item is the tiny S3 bucket SAM uses to upload the code (a few KB).
+The stack also contains a **cost guard**: an AWS Budget emails you at the first cent of usage and,
+at 0.50 USD, a kill-switch function stops the WOA functions (see `team/ARCHITECTURE.md` §6b).
+`tools/deploy.sh` removes the SAM upload artifacts after each deploy.
 
 ## Run the tests
 

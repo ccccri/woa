@@ -46,7 +46,8 @@ In your **own terminal** (it asks for a secret, so it never goes through an agen
 ```
 The script already contains the Skill ID and the two client IDs (public values). It logs you in to
 AWS if needed, asks for the **Alexa Skill Messaging client secret** (Alexa console → WOA → Build →
-Permissions → SHOW) without showing it, deploys to **eu-north-1** (D-013) and prints the outputs.
+Permissions → SHOW) without showing it, asks the email for cost alerts, deploys to **eu-west-1** (D-016) with the cost guard, deletes the
+build artifacts and prints the outputs. Confirm the AWS subscription email it triggers.
 Run the same command for every later update.
 
 **Give the agent:** the printed `SkillFunctionArn` and `ApiUrl`. Never paste secrets in chat.

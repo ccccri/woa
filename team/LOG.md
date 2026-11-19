@@ -16,6 +16,19 @@ Template (copy it to the top, below this header block):
 
 <!-- entries below -->
 
+## 2026-11-19 — claude — Stockholm rejected by Alexa; cost guard; plan to unlock eu-west-1
+**Request:** The user deployed to eu-north-1; the Alexa console rejected the ARN. The user chose to
+unlock the AWS account (option 1) with the strict condition that nothing is ever charged to the card.
+**Done:** Verified the SCP denies us-east-1/us-west-2/eu-west-1. Added the cost guard (budget, SNS,
+`woa-killswitch` + tests), `AlertEmail`/`StopAtUsd` parameters, deploy.sh → eu-west-1 + alert email +
+S3 artifact cleanup. Deleted everything in eu-north-1 (stack, retained table, SAM bucket). D-016,
+STATUS T-19, CONTEXT, USER_STEPS, ARCHITECTURE §6b, AGENTS, README, privacy (Ireland).
+**Verified:** 39 tests pass; cfn-lint clean; eu-north-1 empty (no stacks/log groups).
+**Not done / open:** Account upgrade + advanced features + SCP edit (user, guided). Redeploy.
+Told the user honestly: no absolute cap exists on the Paid Plan; the guard makes charges practically
+impossible and credits pay first.
+**Next:** Guide the user through settings.aws.com upgrade + advanced features (T-19).
+
 ## 2026-11-19 — claude — Guided Amazon Developer setup in the browser; deploy script
 **Request:** The user found the written instructions confusing and asked to be guided step by step
 while the agent watches the screen (Helium browser with the Claude in Chrome extension).

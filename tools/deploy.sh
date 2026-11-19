@@ -10,7 +10,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 PROFILE="${PROFILE:-woa}"
-REGION="${REGION:-eu-north-1}"          # D-013
+REGION="${REGION:-eu-west-1}"           # D-016 (Alexa Europe region)
 STACK="${STACK:-woa}"
 SKILL_ID="${SKILL_ID:-amzn1.ask.skill.cf0d3465-5f2e-4fb5-8b8c-c58bb27a0ab0}"
 LWA_CLIENT_ID="${LWA_CLIENT_ID:-amzn1.application-oa2-client.291a9a72786d49ab983dfa3165198459}"
@@ -36,6 +36,11 @@ if [ -z "$ALEXA_CLIENT_SECRET" ]; then
   exit 1
 fi
 
+if [ -z "${ALERT_EMAIL:-}" ]; then
+  echo
+  read -r -p "Email for cost alerts (AWS sends one confirmation mail, click the link): " ALERT_EMAIL
+fi
+
 sam deploy \
   --template-file template.yaml \
   --profile "$PROFILE" --region "$REGION" --stack-name "$STACK" \
@@ -45,8 +50,35 @@ sam deploy \
     "SkillId=$SKILL_ID" \
     "LwaClientId=$LWA_CLIENT_ID" \
     "AlexaClientId=$ALEXA_CLIENT_ID" \
-    "AlexaClientSecret=$ALEXA_CLIENT_SECRET"
+    "AlexaClientSecret=$ALEXA_CLIENT_SECRET" \
+    "AlertEmail=$ALERT_EMAIL"
 
+# Remove the uploaded build artifacts (all versions): nothing stays stored in S3.
+BUCKET="$(aws cloudformation describe-stacks --profile "$PROFILE" --region "$REGION" \
+  --stack-name aws-sam-cli-managed-default \
+  --query "Stacks[0].Outputs[?OutputKey=='SourceBucket'].OutputValue" --output text 2>/dev/null || true)"
+if [ -n "$BUCKET" ] && [ "$BUCKET" != "None" ]; then
+  echo "Cleaning build artifacts from s3://$BUCKET ..."
+  python3 - "$PROFILE" "$REGION" "$BUCKET" <<'PY'
+import json, subprocess, sys
+profile, region, bucket = sys.argv[1:4]
+def aws(*args):
+    out = subprocess.run(["aws", *args, "--profile", profile, "--region", region, "--output", "json"],
+                         check=True, capture_output=True, text=True).stdout
+    return json.loads(out) if out.strip() else {}
+while True:
+    page = aws("s3api", "list-object-versions", "--bucket", bucket, "--max-items", "500")
+    objs = [{"Key": o["Key"], "VersionId": o["VersionId"]}
+            for o in page.get("Versions", []) + page.get("DeleteMarkers", [])]
+    if not objs:
+        break
+    aws("s3api", "delete-objects", "--bucket", bucket, "--delete", json.dumps({"Objects": objs, "Quiet": True}))
+print("Build artifacts removed.")
+PY
+fi
+
+echo
+echo "Cost guard: confirm the 'AWS Notification - Subscription Confirmation' email sent to $ALERT_EMAIL."
 echo
 echo "Stack outputs (give these to the agent):"
 aws cloudformation describe-stacks --profile "$PROFILE" --region "$REGION" --stack-name "$STACK" \

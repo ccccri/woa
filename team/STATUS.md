@@ -5,9 +5,10 @@
 
 ## Next step
 
-The **user** runs `~/Claude/woa/tools/deploy.sh` in their own terminal (USER_STEPS 1.5) and gives
-the agent `SkillFunctionArn` and `ApiUrl`. Then T-10 (config.js, push) and Part 2 (endpoint, account
-linking, beta tester), then the T-17 region check.
+T-19: the **user** upgrades the AWS project to the Paid Plan and activates advanced features
+(guided in the browser), then the RegionFloor SCP gets eu-west-1. Then the user runs
+`tools/deploy.sh` (now eu-west-1 + cost guard), confirms the alert email, gives the agent
+`SkillFunctionArn` and `ApiUrl` → update `docs/config.js` again, then Part 2.
 
 ## Tasks
 
@@ -32,8 +33,10 @@ Status: `[x]` done · `[ ]` to do · `[~]` in progress · `[!]` blocked. Owner: 
 - [ ] T-13 user — Decide: keep the name "WOA: Wake On Alexa" or use a fallback (see DECISIONS D-011).
 
 ### To do (agents)
+- [ ] T-19 user + agent — Paid Plan upgrade + advanced features + SCP RegionFloor += eu-west-1 (D-016),
+      redeploy to eu-west-1 with the cost guard, update `docs/config.js` apiUrl, push.
 - [ ] T-18 user — Before publishing: reset the LWA client secret (a fragment was exposed to an agent tool on 2026-11-19), then update account linking.
-- [ ] T-17 agent + user — First deploy in **eu-north-1** (D-013) and check that the Alexa console
+- [x] T-17 agent + user — (done: Stockholm REJECTED by Alexa, see D-016) First deploy in **eu-north-1** (D-013) and check that the Alexa console
       accepts the Stockholm ARN as Europe endpoint and that a real TurnOn reaches the Lambda.
       If not: try us-east-1 (allowed by the project SCP, see CONTEXT), last resort is the
       irreversible "activate advanced features" for eu-west-1 (user decision). If the region
@@ -58,15 +61,14 @@ Status: `[x]` done · `[ ]` to do · `[~]` in progress · `[!]` blocked. Owner: 
 - AcceptGrant must use the "Alexa Skill Messaging" client credentials (not the LWA profile).
 - The Alexa console accepts the Lambda ARN also as the North America endpoint (USER_STEPS 2.1).
 - Beta testing is available for this Smart Home skill before certification (USER_STEPS 2.6).
-- Alexa accepts a Lambda in eu-north-1 (Stockholm) for the Europe endpoint (T-17, D-013).
 - AWS always-free limits (Lambda 1M req, DynamoDB 25 GB/25 RCU/WCU) still apply after the
   forced upgrade to the Paid Plan (free plan ends 2027-05-19 or when credits run out).
 
 ## Known risks
 
-- AWS free plan (new experience) ends on **2027-05-19** or when the USD 100 credits run out;
-  then the project must be upgraded to the Paid Plan (irreversible) to keep running. WOA's cost
-  should still be ~0 within always-free limits, but this is unverified.
+- After the Paid Plan upgrade there is no hard spending cap: the cost guard (D-016) must stay in
+  the stack; never remove it. Budget data lags by hours, credits cover the gap.
+- Always-free Lambda/DynamoDB on the Paid Plan is confirmed only by third-party sources so far.
 - Skill name containing "Alexa" may be rejected at certification (D-011).
 - en-US users officially belong to the North America region (us-east-1); WOA relies on the
   gateway region fallback (D-006).

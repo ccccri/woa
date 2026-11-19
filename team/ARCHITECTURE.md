@@ -5,7 +5,7 @@ Technical reference for WOA. Keep it in sync with the code (AGENTS.md §6).
 ## 1. Components
 
 ```
-                ┌──────────────── AWS eu-north-1 (stack "woa") ────────────────┐
+                ┌──────────────── AWS eu-west-1 (stack "woa") ────────────────┐
  Alexa cloud ──▶│ woa-skill  (Lambda, AlexaSkill trigger restricted to SkillId)│
                 │   ▲  async self-invoke {"task":"woa.wake"}                   │
                 │   └──┘                                                       │
@@ -119,6 +119,16 @@ Front end: `docs/config.js` holds `lwaClientId` and `apiUrl` (both public). Whil
 `REPLACE_ME` the setup page shows "not configured".
 
 Stack outputs: `SkillFunctionArn` (skill endpoint), `ApiUrl` (setup page API).
+
+## 6b. Cost guard (D-016)
+
+`CostBudget` (monthly COST budget, credits and refunds excluded, limit 1 USD):
+- ACTUAL > 1% (= 0.01 USD) → email to `AlertEmail`.
+- ACTUAL > `StopAtUsd` (default 0.5) → SNS `woa-cost-alerts` → `woa-killswitch`
+  (`src/woa/killswitch.py`) sets reserved concurrency 0 on `woa-skill` and `woa-web`.
+- FORECASTED > 100% → email.
+Re-enable after checking the bill: `aws lambda delete-function-concurrency --function-name woa-skill`
+(and `woa-web`). `tools/deploy.sh` deletes SAM build artifacts after deploy.
 
 ## 7. Security notes
 

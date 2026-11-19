@@ -27,6 +27,14 @@ Parameters:
     Type: String
     Default: EU,NA,FE
     Description: Alexa Event Gateway regions to try, in order, for users whose region is not known yet.
+  AlertEmail:
+    Type: String
+    Description: Email that receives cost alerts (confirm the AWS Notification email once).
+    AllowedPattern: "[^@\\s]+@[^@\\s]+\\.[^@\\s]+"
+  StopAtUsd:
+    Type: Number
+    Default: 0.5
+    Description: Monthly cost (USD, before credits) at which the kill switch stops the WOA functions.
 
 Globals:
   Function:
@@ -114,6 +122,93 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub "/aws/lambda/${AWS::StackName}-web"
+      RetentionInDays: 14
+
+  # ---------------------------------------------------------------------------
+  # Cost guard (D-016): email at the first cent, kill switch at StopAtUsd.
+  # Budget amounts exclude credits, so any real usage is visible immediately.
+  CostAlertTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub "${AWS::StackName}-cost-alerts"
+      Subscription:
+        - {Protocol: email, Endpoint: !Ref AlertEmail}
+
+  CostAlertTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics: [!Ref CostAlertTopic]
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: {Service: budgets.amazonaws.com}
+            Action: SNS:Publish
+            Resource: !Ref CostAlertTopic
+            Condition:
+              StringEquals: {"aws:SourceAccount": !Ref AWS::AccountId}
+
+  CostBudget:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetName: !Sub "${AWS::StackName}-cost-guard"
+        BudgetType: COST
+        TimeUnit: MONTHLY
+        BudgetLimit: {Amount: 1, Unit: USD}
+        CostTypes:
+          IncludeCredit: false
+          IncludeRefund: false
+      NotificationsWithSubscribers:
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: 1         # 1% of the 1 USD limit = first cent
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - {SubscriptionType: EMAIL, Address: !Ref AlertEmail}
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: !Ref StopAtUsd
+            ThresholdType: ABSOLUTE_VALUE
+          Subscribers:
+            - {SubscriptionType: SNS, Address: !Ref CostAlertTopic}
+        - Notification:
+            NotificationType: FORECASTED
+            ComparisonOperator: GREATER_THAN
+            Threshold: 100
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - {SubscriptionType: EMAIL, Address: !Ref AlertEmail}
+
+  KillSwitchFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-killswitch"
+      Description: Stops the WOA functions when the cost budget is exceeded
+      Handler: woa.killswitch.lambda_handler
+      Timeout: 30
+      Environment:
+        Variables:
+          TARGET_FUNCTIONS: !Sub "${AWS::StackName}-skill,${AWS::StackName}-web"
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action: lambda:PutFunctionConcurrency
+              Resource:
+                - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${AWS::StackName}-skill"
+                - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${AWS::StackName}-web"
+      Events:
+        CostAlert:
+          Type: SNS
+          Properties:
+            Topic: !Ref CostAlertTopic
+
+  KillSwitchFunctionLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${AWS::StackName}-killswitch"
       RetentionInDays: 14
 
 Outputs:

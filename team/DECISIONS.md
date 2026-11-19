@@ -92,6 +92,7 @@ if it fails the page tells the user to say "Alexa, discover devices".
 other's private memory or chat.
 
 ## D-013 — Deploy region: eu-north-1 (Stockholm) instead of eu-west-1 (to verify)
+**Superseded by D-016:** the Alexa console rejected the Stockholm ARN.
 2026-11-19 · claude (proposed, pending the T-17 test)
 **Decision:** Deploy the stack in the user's AWS project Region **eu-north-1**. The code and
 template are region-independent; only the `--region` flag and docs change.
@@ -127,3 +128,19 @@ Amazon account, like AWS. The Echo devices are on the family Amazon account, whi
 **Why:** Keeps the skill under the user's own name; unpublished skills only work for the developer
 account and beta testers.
 **Consequences:** Account linking and the setup page are used with the family account.
+
+## D-016 — Unlock eu-west-1 with advanced features, protected by a cost guard
+2026-11-19 · user (choice) + claude (guard design)
+**Facts:** The Alexa console rejects a Lambda ARN in eu-north-1 ("not valid for any of the supported
+regions"). The new-experience project's SCP denies Lambda/DynamoDB even read calls in us-east-1,
+us-west-2 and eu-west-1. Alexa Smart Home needs Lambda in one of those.
+**Decision:** The user upgrades the AWS project to the Paid Plan and activates advanced features
+(both irreversible), then the RegionFloor SCP is extended to eu-west-1 and WOA is deployed there.
+The user does not want to spend any money, so the stack includes a **cost guard**: an AWS Budget
+(credits excluded) emails at the first cent and at forecast > 1 USD, and at `StopAtUsd` (0.5 USD)
+publishes to SNS → `woa-killswitch` sets reserved concurrency 0 on `woa-skill` and `woa-web`.
+`tools/deploy.sh` also deletes the SAM build artifacts (all versions) after each deploy.
+**Why:** The free plan would end on 2027-05-19 anyway; always-free Lambda/DynamoDB limits stay on
+the Paid Plan; USD 100 credits absorb any cost first. No hard spending cap exists on the Paid Plan,
+so the guard makes a card charge practically, not absolutely, impossible (budget data lags hours).
+**Done:** Stockholm stack, retained table and SAM bucket deleted (2026-11-19).

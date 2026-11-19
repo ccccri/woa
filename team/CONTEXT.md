@@ -61,7 +61,9 @@ Check the plan with `aws freetier get-account-plan-state --profile woa`.
 | Permissions | Send Alexa Events ON; Alexa (skill messaging) Client ID `amzn1.application-oa2-client.5212b8e810a94865a5a5c5d07e2edf60` |
 | Endpoint, account linking | Being set (USER_STEPS Part 2) |
 
-Deployment (2026-11-19): stack `woa` in eu-north-1 via `tools/deploy.sh`.
+Deployment history: 2026-11-19 stack `woa` in eu-north-1 worked but the Alexa console rejected the
+ARN; deleted the same day (D-016). Target now: eu-west-1 after the account unlock (T-19).
+Old eu-north-1 details, for reference only:
 - Skill Lambda: `woa-skill` (ARN = `arn:aws:lambda:eu-north-1:<account>:function:woa-skill`)
 - API (setup page): `https://ofac2ixfi2p6ug3mvkm2lofdti0hnntt.lambda-url.eu-north-1.on.aws`
 - Smoke tests passed: API 401 without token, CORS allows only https://ccccri.github.io, Discover
