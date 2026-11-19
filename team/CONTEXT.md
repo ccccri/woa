@@ -59,7 +59,13 @@ Check the plan with `aws freetier get-account-plan-state --profile woa`.
 | Skill ID | `amzn1.ask.skill.cf0d3465-5f2e-4fb5-8b8c-c58bb27a0ab0` |
 | Locales | it-IT (primary), en-US, en-GB added |
 | Permissions | Send Alexa Events ON; Alexa (skill messaging) Client ID `amzn1.application-oa2-client.5212b8e810a94865a5a5c5d07e2edf60` |
-| Endpoint, account linking | Not set yet (after deploy, USER_STEPS Part 2) |
+| Endpoint, account linking | Being set (USER_STEPS Part 2) |
+
+Deployment (2026-11-19): stack `woa` in eu-north-1 via `tools/deploy.sh`.
+- Skill Lambda: `woa-skill` (ARN = `arn:aws:lambda:eu-north-1:<account>:function:woa-skill`)
+- API (setup page): `https://ofac2ixfi2p6ug3mvkm2lofdti0hnntt.lambda-url.eu-north-1.on.aws`
+- Smoke tests passed: API 401 without token, CORS allows only https://ccccri.github.io, Discover
+  with a fake token returns an empty list (cold start ~4 s).
 | Console | https://developer.amazon.com/alexa/console/ask (wizard: Name/Locale → Experience "Smart home", Model "Smart Home", Hosting "Provision your own" → Review) |
 
 Note: during setup an agent's page search read part of the hidden LWA client secret; consider

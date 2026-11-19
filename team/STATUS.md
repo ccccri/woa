@@ -38,7 +38,7 @@ Status: `[x]` done · `[ ]` to do · `[~]` in progress · `[!]` blocked. Owner: 
       If not: try us-east-1 (allowed by the project SCP, see CONTEXT), last resort is the
       irreversible "activate advanced features" for eu-west-1 (user decision). If the region
       changes, update `docs/privacy.html` (both languages, now says eu-north-1).
-- [ ] T-10 agent — After deploy: put LWA client ID + `ApiUrl` in `docs/config.js`, the Lambda ARN in
+- [x] T-10 agent — (done 2026-11-19) After deploy: put LWA client ID + `ApiUrl` in `docs/config.js`, the Lambda ARN in
       `skill-package/skill.json`, commit, push (user asked for GitHub Pages), verify the setup page.
 - [ ] T-14 agent — Guide the first real test with the user's Echo Dot + PC (`team/USER_STEPS.md` Part 3);
       check CloudWatch logs with the user; fix what the real Alexa traffic reveals (see "Unverified").
