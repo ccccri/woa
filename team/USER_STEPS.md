@@ -3,8 +3,8 @@
 Account and agreement steps are **always done by the user** (AGENTS.md §6). Agents explain them
 in Italian in chat, using this file as the source. Mark progress in `team/STATUS.md`.
 
-Use the **same Amazon account as your Echo devices** everywhere: development-mode skills only
-work on the developer account's own devices.
+Accounts (D-015): AWS and Amazon Developer use the user's **personal** Amazon account; the Echo
+devices are on the **family** account, which is invited as a beta tester (Part 2, step 6).
 
 ---
 
@@ -73,11 +73,15 @@ Never paste secrets in chat.
    icons `https://ccccri.github.io/woa/assets/icon-108.png` and `icon-512.png`, privacy
    `https://ccccri.github.io/woa/privacy.html`, terms `https://ccccri.github.io/woa/terms.html`.
 5. Skill → *Test* tab → set testing to **Development**.
+6. Skill → *Distribution* → *Availability* → **Beta Test**: add the **family account's email** as a
+   tester and save. Open the invitation email on the family account and accept it (it enables
+   the skill for that account). The beta lasts 90 days and can be extended.
 
 ## Part 3 — First real test (STATUS T-14)
 
-1. Alexa app → *More* → *Skills & Games* → *Your Skills* → *Dev* → **WOA** → *Enable* → log in.
-2. Open https://ccccri.github.io/woa/setup.html → sign in with Amazon → add the PC
+1. In the Alexa app of the **family account**: enable **WOA** (from the beta invitation, or
+   *More* → *Skills & Games* → *Your Skills*) → log in with the **family** Amazon account.
+2. Open https://ccccri.github.io/woa/setup.html → sign in with the **family** Amazon account → add the PC
    (`PC` or `computer`, MAC `c8:7f:54:0b:30:c5`).
 3. Shut the PC down (normal shutdown, cable connected).
 4. Say "Alexa, accendi computer" to the Echo Dot. Also try from the Alexa app away from Wi-Fi.

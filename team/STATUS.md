@@ -27,7 +27,7 @@ Status: `[x]` done · `[ ]` to do · `[~]` in progress · `[!]` blocked. Owner: 
 ### Waiting for the user
 - [~] T-09 user — `team/USER_STEPS.md` Part 1. 1.1 AWS done 2026-11-19 (new AWS experience, project in
       eu-north-1, CLI profile `woa`); 1.2-1.4 to do; 1.5 deploy together with an agent (T-17).
-- [ ] T-11 user — `team/USER_STEPS.md` Part 2: skill endpoint, account linking, enable skill on own Echo.
+- [ ] T-11 user — `team/USER_STEPS.md` Part 2: skill endpoint, account linking, beta test invite for the family account (D-015).
 - [ ] T-12 user — Decide: email address for the privacy policy contact (now only GitHub issues).
 - [ ] T-13 user — Decide: keep the name "WOA: Wake On Alexa" or use a fallback (see DECISIONS D-011).
 
@@ -56,6 +56,7 @@ Status: `[x]` done · `[ ]` to do · `[~]` in progress · `[!]` blocked. Owner: 
 - `Alexa.EndpointHealth` version `"3"` is still accepted (newer docs show 3.1).
 - AcceptGrant must use the "Alexa Skill Messaging" client credentials (not the LWA profile).
 - The Alexa console accepts the Lambda ARN also as the North America endpoint (USER_STEPS 2.1).
+- Beta testing is available for this Smart Home skill before certification (USER_STEPS 2.6).
 - Alexa accepts a Lambda in eu-north-1 (Stockholm) for the Europe endpoint (T-17, D-013).
 - AWS always-free limits (Lambda 1M req, DynamoDB 25 GB/25 RCU/WCU) still apply after the
   forced upgrade to the Paid Plan (free plan ends 2027-05-19 or when credits run out).

@@ -24,8 +24,11 @@ Background every agent needs: who the user is, their setup, preferences and refe
 | Network | Sky WiFi Hub (router) + ASUS RT-BE58U in access point mode, single LAN |
 | Alexa account region | Italy → Europe (Event Gateway `api.eu.amazonalexa.com`) |
 
-Testing in development mode works only on Echo devices registered to the **same Amazon account**
-as the Amazon Developer account that owns the skill.
+Amazon accounts (D-015): the **Echo devices are on the family Amazon account**; AWS and the Amazon
+Developer account (skill owner) are on the user's **personal** account. An unpublished skill works
+only for the developer account and invited **beta testers**, so the family account is invited as a
+beta tester. The family account is the one that links the skill in the Alexa app, so it is also
+the account to use on the WOA setup page (same LWA user_id).
 
 ## AWS account (since 2026-11-19)
 

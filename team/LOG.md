@@ -16,6 +16,16 @@ Template (copy it to the top, below this header block):
 
 <!-- entries below -->
 
+## 2026-11-19 — claude — Amazon accounts: personal developer, family account as beta tester
+**Request:** The user signed up to AWS with the personal Amazon account while the Echo devices are on
+the family account; asked if that is fine and what to do on developer.amazon.com.
+**Done:** Explained (in chat) USER_STEPS 1.2-1.4. User chose: developer account on the personal
+account, family account invited as beta tester (D-015). Updated CONTEXT, USER_STEPS (intro, new
+Part 2 step 6 beta test, Part 3 uses the family account), STATUS.
+**Verified:** Docs only; 37 tests pass.
+**Not done / open:** Beta testing for Smart Home skills before certification is assumed, not verified.
+**Next:** User does USER_STEPS 1.2-1.4 and sends Skill ID + the two client IDs (never secrets).
+
 ## 2026-11-19 — claude — AWS account setup, Agent Toolkit, region change to eu-north-1
 **Request:** The user signed up to AWS (new AWS experience) and asked to follow AWS's "Agent
 Toolkit" setup prompt; asked how MFA works. Chose to install the toolkit too.

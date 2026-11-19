@@ -118,3 +118,12 @@ automatic skill updates **off**. AWS rules from the toolkit are **not** added to
 access key steps first written in USER_STEPS 1.1).
 **Consequences:** Agents can act on the user's AWS project. Agents still ask before creating,
 changing or deleting AWS resources, and never enter secrets on the user's behalf.
+
+## D-015 — Developer account personal, family account as beta tester
+2026-11-19 · user
+**Decision:** The Amazon Developer account (skill owner and public author) is the user's personal
+Amazon account, like AWS. The Echo devices are on the family Amazon account, which is invited as a
+**beta tester** to use WOA before publication.
+**Why:** Keeps the skill under the user's own name; unpublished skills only work for the developer
+account and beta testers.
+**Consequences:** Account linking and the setup page are used with the family account.
