@@ -41,6 +41,14 @@ The gateway must match the region of the user's Alexa account. WOA runs one back
 `eu-west-1`, tries the EU gateway first and falls back to NA/FE when the gateway answers
 `SKILL_NEVER_ENABLED_EXCEPTION`, then remembers the right region for that user.
 
+## Working on WOA (humans and AI agents)
+
+This project is developed by the user together with two AI agents, **Claude Code** and
+**OpenCode**, taking turns. Start with [`AGENTS.md`](AGENTS.md) (rules and workflow) and the
+shared project memory in [`team/`](team/README.md): status and task list, session log,
+decisions, context, architecture and the step-by-step guide for account setup
+([`team/USER_STEPS.md`](team/USER_STEPS.md)).
+
 ## Repository layout
 
 | Path | What |
@@ -54,6 +62,8 @@ The gateway must match the region of the user's Alexa account. WOA runs one back
 | `docs/` | GitHub Pages: home, setup page, privacy policy, terms, icons |
 | `skill-package/` | Skill manifest, account linking settings, certification testing instructions |
 | `tools/make_icons.py` | Regenerates the skill icons |
+| `tools/handoff.py` | Agent turn handoff (start/end/status) |
+| `AGENTS.md`, `CLAUDE.md`, `opencode.json`, `team/` | Agent instructions and shared project memory |
 
 ## Costs
 

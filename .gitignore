@@ -3,3 +3,4 @@ __pycache__/
 .aws-sam/
 samconfig.toml
 .env
+team/.active
