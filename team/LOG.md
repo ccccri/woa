@@ -16,6 +16,23 @@ Template (copy it to the top, below this header block):
 
 <!-- entries below -->
 
+## 2026-11-19 — claude — AWS account setup, Agent Toolkit, region change to eu-north-1
+**Request:** The user signed up to AWS (new AWS experience) and asked to follow AWS's "Agent
+Toolkit" setup prompt; asked how MFA works. Chose to install the toolkit too.
+**Done:** Installed AWS CLI 2.41.1 and uv (user-local); user logged in with `aws login --profile woa`
+(region eu-north-1); installed the Agent Toolkit for Claude Code and OpenCode with auto-update off
+and pointed `aws-mcp` at profile `woa`; installed SAM CLI 1.173.0. Did not add AWS rules to this
+repo. Found that the AWS project is locked to eu-north-1: added D-013 (deploy there, test it in
+T-17) and D-014 (AWS access rules for agents); updated STATUS, CONTEXT (AWS account section),
+USER_STEPS 1.1/1.5, AGENTS.md (AWS rule, deploy command), ARCHITECTURE, README, privacy policy
+(Sweden) and the `config.js` placeholder.
+**Verified:** `aws sts get-caller-identity` OK; `aws-mcp` connected in both Claude Code and
+OpenCode; `aws agent-toolkit list-available-skills` OK; free plan active (USD 100, until
+2027-05-19); 37 tests pass.
+**Not done / open:** Nothing deployed yet. Unverified whether Alexa accepts a Stockholm Lambda
+(T-17). The free plan ends 2027-05-19 (see Known risks).
+**Next:** User does USER_STEPS 1.2-1.4 (Amazon Developer, LWA profile, skill), then T-17.
+
 ## 2026-11-19 — claude — Team workflow for Claude Code + OpenCode
 **Request:** From now on Claude Code and OpenCode alternate on this project; the repo must contain
 everything, fully explained, plus a way to pass information between agents (what changed, what is

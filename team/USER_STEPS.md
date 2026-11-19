@@ -10,15 +10,13 @@ work on the developer account's own devices.
 
 ## Part 1 — Accounts, security profile, skill, deploy (STATUS T-09)
 
-### 1.1 AWS account
-1. Sign up at https://aws.amazon.com (needs a card).
-2. Enable MFA on the root user: account menu → *Security credentials*.
-3. Billing → *Budgets* → *Create budget* → **Zero spend budget**, with your email. It warns you
-   if anything costs even one cent.
-4. IAM → *Users* → *Create user* `woa-deployer`, attach policy `AdministratorAccess`.
-   Open the user → *Security credentials* → *Create access key* → *Command Line Interface*.
-5. In a terminal: `brew install aws-sam-cli awscli`, then `aws configure`
-   (paste the two keys, region `eu-west-1`, output `json`).
+### 1.1 AWS account — DONE 2026-11-19
+1. Signed up with the **new AWS experience** (social login). The project Region is **eu-north-1**.
+2. MFA: protected by the 2-step verification of the Google/GitHub account used to sign in
+   (make sure it is enabled there).
+3. Done with an agent: AWS CLI + `aws login --profile woa` (browser), SAM CLI, AWS Agent Toolkit.
+4. Still recommended: AWS Settings (https://settings.aws.com) → Billing → check the plan, credits
+   and set a spend limit/alert if offered.
 
 ### 1.2 Amazon Developer account
 Sign up at https://developer.amazon.com (free) and complete the profile (payment info is not
@@ -41,14 +39,16 @@ needed for a free skill).
 4. Left menu **Permissions** → enable **Send Alexa Events** → note the
    **Alexa Skill Messaging Client ID** and keep the **Client Secret** private.
 
-### 1.5 Deploy the backend
-In your own terminal (so the secret never goes through an agent):
+### 1.5 Deploy the backend (together with an agent, task T-17)
+If the AWS login expired: `aws login --profile woa`. Then in your own terminal (the command asks
+for a secret, so it never goes through an agent):
 ```sh
 cd ~/Claude/woa
-sam deploy --guided --region eu-west-1 --stack-name woa --capabilities CAPABILITY_IAM --resolve-s3
+sam deploy --guided --profile woa --region eu-north-1 --stack-name woa --capabilities CAPABILITY_IAM --resolve-s3
 ```
 Answers: `SkillId`, `LwaClientId` (1.3), `AlexaClientId` and `AlexaClientSecret` (1.4); defaults
 for everything else; "Save arguments to configuration file" = yes (`samconfig.toml` is git-ignored).
+The region is eu-north-1 because the AWS project cannot create resources in eu-west-1 (D-013).
 
 **Give the agent:** the outputs `SkillFunctionArn` and `ApiUrl`, and the LWA **Client ID**.
 Never paste secrets in chat.

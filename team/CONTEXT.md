@@ -27,6 +27,24 @@ Background every agent needs: who the user is, their setup, preferences and refe
 Testing in development mode works only on Echo devices registered to the **same Amazon account**
 as the Amazon Developer account that owns the skill.
 
+## AWS account (since 2026-11-19)
+
+| Item | Value |
+| --- | --- |
+| Type | **New AWS experience** ("project"), signed up with a social login; managed SCP/RCP guardrails |
+| Account ID | not written here (public repo): `aws sts get-caller-identity --profile woa` |
+| Project Region | **eu-north-1** (Stockholm), assigned from the contact country, cannot be changed |
+| Other Regions | Denied by the `RegionFloor` SCP except us-east-1 and us-west-2 |
+| Plan | FREE, USD 100 credits, expires **2027-05-19** (then Paid Plan upgrade required, irreversible) |
+| CLI | AWS CLI 2.41.1 in `~/.local/bin`, profile **`woa`** via `aws login` (12 h, renews up to 90 days) |
+| SAM CLI | 1.173.0, installed with `uv tool install aws-sam-cli` |
+| Agent Toolkit | 25 skills in `~/.claude/skills` and `~/.agents/skills`; MCP server `aws-mcp` for Claude Code (`~/.claude.json`) and OpenCode (`~/.config/opencode/opencode.json`), env `AWS_MCP_PROXY_PROFILES=woa`; auto-update off |
+| Config backup | `~/Claude/backups/agent-config-20261119-1434/` (agent configs before the toolkit) |
+| MFA | Social-login projects are protected by the social provider's 2-step verification |
+
+If an AWS command fails with expired credentials, the user runs `aws login --profile woa`.
+Check the plan with `aws freetier get-account-plan-state --profile woa`.
+
 ## Glossary
 
 - **Magic packet**: Wake on LAN frame (6×`FF` + 16× MAC) broadcast on the LAN.
@@ -57,7 +75,11 @@ Facts collected from these pages (2026-11-06):
   403 SKILL_NEVER_ENABLED = wrong region; 429/500/503 = retry (max 3, ≥1 s apart).
 - Discovery limits: 300 endpoints/user; endpointId ≤ 256 chars `[A-Za-z0-9 _\-=#;:?@&]`;
   friendlyName no punctuation; manufacturerName/description ≤ 128 chars; `COMPUTER` category exists.
-- Locale → Lambda region: it-IT, en-GB → eu-west-1; en-US → us-east-1.
+- Locale → Lambda region: it-IT, en-GB → eu-west-1; en-US → us-east-1. A matching region
+  "reduces latency" (implement-your-addon page); whether other regions work is tested in T-17.
+- AWS new experience: project Region by contact country (us-east-2 / eu-north-1 / ap-southeast-2);
+  advanced features unlock other Regions but require the irreversible Paid Plan upgrade and remove
+  the spend limit (https://docs.aws.amazon.com/accounts/latest/reference/activate-advanced-features.md).
 
 ## Related projects of the user
 

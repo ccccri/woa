@@ -15,6 +15,7 @@ no app on the PC and no open ports. That is what made wolskill.com work.
 **Source:** https://developer.amazon.com/en-US/docs/alexa/device-apis/alexa-wakeonlancontroller.html
 
 ## D-002 — AWS Lambda (Python) + DynamoDB in eu-west-1, deployed with SAM
+**Region part superseded by D-013.**
 2026-11-06 · user
 **Decision:** One SAM stack (`woa`) in `eu-west-1`; Python stdlib only.
 **Why:** Free tier, user's region (Italy → Europe Alexa region), one-command deploy.
@@ -89,3 +90,31 @@ if it fails the page tells the user to say "Alexa, discover devices".
 `tools/handoff.py end`. Agents commit locally each turn; push only when the user asks.
 **Why:** The user alternates requests between Claude Code and OpenCode; neither can read the
 other's private memory or chat.
+
+## D-013 — Deploy region: eu-north-1 (Stockholm) instead of eu-west-1 (to verify)
+2026-11-19 · claude (proposed, pending the T-17 test)
+**Decision:** Deploy the stack in the user's AWS project Region **eu-north-1**. The code and
+template are region-independent; only the `--region` flag and docs change.
+**Why:** The user's AWS account is a "new AWS experience" project. Projects are assigned one
+Region by contact country (Europe → eu-north-1) and a managed SCP (`RegionFloor`) denies other
+Regions except us-east-1 and us-west-2. eu-west-1 is reachable only by upgrading to the Paid Plan
+and activating advanced features, both irreversible (and it removes the spend limit).
+Alexa docs map the Europe endpoint to Ireland but say a matching region only "reduces latency",
+so a Stockholm Lambda should work; to be confirmed in T-17.
+**Fallbacks, in order:** us-east-1 (allowed by the SCP; canonical North America region),
+then advanced features + eu-west-1 (user's decision only).
+**Sources:** https://docs.aws.amazon.com/accounts/latest/reference/project-regions.md ·
+https://docs.aws.amazon.com/accounts/latest/reference/scps-and-rcps-for-projects.html ·
+https://docs.aws.amazon.com/accounts/latest/reference/activate-advanced-features.md ·
+https://developer.amazon.com/en-US/docs/alexaplus/smarthome/implement-your-addon.html
+
+## D-014 — AWS access via `aws login` and the AWS Agent Toolkit
+2026-11-19 · user
+**Decision:** The AWS CLI uses profile `woa`, authenticated with `aws login` (browser, 12 h
+credentials renewable for 90 days; no access keys). The AWS Agent Toolkit is installed for both
+Claude Code and OpenCode (25 AWS skills, `aws-mcp` MCP server pointed at profile `woa`), with
+automatic skill updates **off**. AWS rules from the toolkit are **not** added to this repo.
+**Why:** The user chose it; `aws login` avoids long-lived IAM keys (supersedes the IAM user +
+access key steps first written in USER_STEPS 1.1).
+**Consequences:** Agents can act on the user's AWS project. Agents still ask before creating,
+changing or deleting AWS resources, and never enter secrets on the user's behalf.

@@ -37,8 +37,8 @@ no Raspberry Pi, no app on the PC, no open ports.
 5. **TurnOn**: DeferredResponse, then `WakeUp` and the final `Response` are sent to the gateway by a
    second asynchronous invocation of the same Lambda.
 
-The gateway must match the region of the user's Alexa account. WOA runs one backend in
-`eu-west-1`, tries the EU gateway first and falls back to NA/FE when the gateway answers
+The gateway must match the region of the user's Alexa account. WOA runs one backend (the reference deployment
+is in `eu-north-1`), tries the EU gateway first and falls back to NA/FE when the gateway answers
 `SKILL_NEVER_ENABLED_EXCEPTION`, then remembers the right region for that user.
 
 ## Working on WOA (humans and AI agents)
@@ -95,7 +95,7 @@ Prerequisites: an Amazon Developer account, an AWS account and the
      authentication scheme HTTP Basic (see `skill-package/account-linking.json`).
 3. **Backend**:
    ```sh
-   sam deploy --guided --region eu-west-1 --stack-name woa --capabilities CAPABILITY_IAM --resolve-s3
+   sam deploy --guided --region <your-region> --stack-name woa --capabilities CAPABILITY_IAM --resolve-s3
    ```
    Answer the parameters (skill ID, LWA client ID, skill messaging client ID/secret). Later deploys:
    `sam deploy`.

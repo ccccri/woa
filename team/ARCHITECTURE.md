@@ -5,7 +5,7 @@ Technical reference for WOA. Keep it in sync with the code (AGENTS.md §6).
 ## 1. Components
 
 ```
-                ┌──────────────── AWS eu-west-1 (stack "woa") ────────────────┐
+                ┌──────────────── AWS eu-north-1 (stack "woa") ────────────────┐
  Alexa cloud ──▶│ woa-skill  (Lambda, AlexaSkill trigger restricted to SkillId)│
                 │   ▲  async self-invoke {"task":"woa.wake"}                   │
                 │   └──┘                                                       │

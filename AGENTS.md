@@ -59,7 +59,7 @@ from any Echo or the Alexa app wakes a PC with Wake on LAN. It uses the official
 no extra device at home. Replaces wolskill.com (now paid). Locales: it-IT, en-US, en-GB.
 Only power **on**; there is no power off.
 
-- Backend: AWS Lambda (Python, stdlib only) + DynamoDB, `eu-west-1`, deployed with AWS SAM.
+- Backend: AWS Lambda (Python, stdlib only) + DynamoDB, `eu-north-1` (D-013), deployed with AWS SAM.
   Must stay inside the AWS always-free tier.
 - Account linking: Login with Amazon (scope `profile:user_id`).
 - Setup page: static site in `docs/` on GitHub Pages (https://ccccri.github.io/woa/).
@@ -88,6 +88,10 @@ Only power **on**; there is no power off.
 - **The user owns all accounts.** Never create, sign in to, or change anything on the user's
   Amazon Developer, AWS, Login with Amazon or certification accounts. Write step-by-step
   instructions in `team/USER_STEPS.md` and tell the user in chat what to do.
+- **AWS access (D-014):** both agents have the AWS CLI profile `woa` and the `aws-mcp` MCP
+  server. Read-only checks are fine; **ask the user before creating, changing or deleting any
+  AWS resource**, and never deploy secrets on their behalf. The project can only use
+  eu-north-1 (plus us-east-1/us-west-2); see D-013 and `team/CONTEXT.md`.
 - **No secrets in the repo, logs or chat.** Client secrets, AWS keys and tokens are entered by
   the user directly (e.g. `sam deploy --guided`). Client IDs, skill ID, ARNs and URLs are not
   secret and can be committed. `handoff.py end` scans for common secret patterns.
@@ -121,7 +125,10 @@ AWS_DEFAULT_REGION=eu-west-1 AWS_ACCESS_KEY_ID=x AWS_SECRET_ACCESS_KEY=x \
   /tmp/woa-venv/bin/python -m unittest discover -s tests
 
 # Deploy (the USER runs it, it asks for secrets):
-sam deploy --guided --region eu-west-1 --stack-name woa --capabilities CAPABILITY_IAM --resolve-s3
+sam deploy --guided --profile woa --region eu-north-1 --stack-name woa --capabilities CAPABILITY_IAM --resolve-s3
+
+# AWS CLI (profile woa, region eu-north-1; renew with: aws login --profile woa)
+aws sts get-caller-identity --profile woa
 ```
 
 ## 8. Code conventions
