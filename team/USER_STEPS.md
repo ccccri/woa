@@ -8,7 +8,7 @@ devices are on the **family** account, which is invited as a beta tester (Part 2
 
 ---
 
-## Part 1 — Accounts, security profile, skill, deploy (STATUS T-09)
+## Part 1 — Accounts, security profile, skill, deploy (STATUS T-09) — 1.1-1.4 DONE 2026-11-19
 
 ### 1.1 AWS account — DONE 2026-11-19
 1. Signed up with the **new AWS experience** (social login). The project Region is **eu-north-1**.
@@ -39,19 +39,17 @@ needed for a free skill).
 4. Left menu **Permissions** → enable **Send Alexa Events** → note the
    **Alexa Skill Messaging Client ID** and keep the **Client Secret** private.
 
-### 1.5 Deploy the backend (together with an agent, task T-17)
-If the AWS login expired: `aws login --profile woa`. Then in your own terminal (the command asks
-for a secret, so it never goes through an agent):
+### 1.5 Deploy the backend (task T-17)
+In your **own terminal** (it asks for a secret, so it never goes through an agent):
 ```sh
-cd ~/Claude/woa
-sam deploy --guided --profile woa --region eu-north-1 --stack-name woa --capabilities CAPABILITY_IAM --resolve-s3
+~/Claude/woa/tools/deploy.sh
 ```
-Answers: `SkillId`, `LwaClientId` (1.3), `AlexaClientId` and `AlexaClientSecret` (1.4); defaults
-for everything else; "Save arguments to configuration file" = yes (`samconfig.toml` is git-ignored).
-The region is eu-north-1 because the AWS project cannot create resources in eu-west-1 (D-013).
+The script already contains the Skill ID and the two client IDs (public values). It logs you in to
+AWS if needed, asks for the **Alexa Skill Messaging client secret** (Alexa console → WOA → Build →
+Permissions → SHOW) without showing it, deploys to **eu-north-1** (D-013) and prints the outputs.
+Run the same command for every later update.
 
-**Give the agent:** the outputs `SkillFunctionArn` and `ApiUrl`, and the LWA **Client ID**.
-Never paste secrets in chat.
+**Give the agent:** the printed `SkillFunctionArn` and `ApiUrl`. Never paste secrets in chat.
 
 ---
 

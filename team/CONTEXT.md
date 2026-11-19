@@ -48,6 +48,23 @@ the account to use on the WOA setup page (same LWA user_id).
 If an AWS command fails with expired credentials, the user runs `aws login --profile woa`.
 Check the plan with `aws freetier get-account-plan-state --profile woa`.
 
+## Amazon Developer (since 2026-11-19, personal account)
+
+| Item | Value |
+| --- | --- |
+| Developer account | Personal Amazon account (already existed: old 2021 Blueprint skill "Le mie domande") |
+| LWA security profile | `WOA`, privacy URL set, Allowed Origins `https://ccccri.github.io`, Return URLs not yet set |
+| LWA Client ID | `amzn1.application-oa2-client.291a9a72786d49ab983dfa3165198459` (public) |
+| Skill | "WOA: Wake On Alexa", Smart Home, payload v3, primary locale it-IT, Provision your own |
+| Skill ID | `amzn1.ask.skill.cf0d3465-5f2e-4fb5-8b8c-c58bb27a0ab0` |
+| Locales | it-IT (primary), en-US, en-GB added |
+| Permissions | Send Alexa Events ON; Alexa (skill messaging) Client ID `amzn1.application-oa2-client.5212b8e810a94865a5a5c5d07e2edf60` |
+| Endpoint, account linking | Not set yet (after deploy, USER_STEPS Part 2) |
+| Console | https://developer.amazon.com/alexa/console/ask (wizard: Name/Locale → Experience "Smart home", Model "Smart Home", Hosting "Provision your own" → Review) |
+
+Note: during setup an agent's page search read part of the hidden LWA client secret; consider
+"Reset Client Secret" on the LWA profile before going public (STATUS T-18).
+
 ## Glossary
 
 - **Magic packet**: Wake on LAN frame (6×`FF` + 16× MAC) broadcast on the LAN.

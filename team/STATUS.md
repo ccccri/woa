@@ -5,9 +5,9 @@
 
 ## Next step
 
-The **user** completes `team/USER_STEPS.md` Part 1 from 1.2 (Amazon Developer, Login with Amazon
-security profile, skill creation). AWS (1.1) is done. Then an agent deploys to **eu-north-1**
-(T-17, the region question in D-013) with the user, and continues with T-10.
+The **user** runs `~/Claude/woa/tools/deploy.sh` in their own terminal (USER_STEPS 1.5) and gives
+the agent `SkillFunctionArn` and `ApiUrl`. Then T-10 (config.js, push) and Part 2 (endpoint, account
+linking, beta tester), then the T-17 region check.
 
 ## Tasks
 
@@ -25,13 +25,14 @@ Status: `[x]` done · `[ ]` to do · `[~]` in progress · `[!]` blocked. Owner: 
 - [x] T-08 claude — Team workflow for Claude Code + OpenCode (`AGENTS.md`, `team/`, `tools/handoff.py`).
 
 ### Waiting for the user
-- [~] T-09 user — `team/USER_STEPS.md` Part 1. 1.1 AWS done 2026-11-19 (new AWS experience, project in
-      eu-north-1, CLI profile `woa`); 1.2-1.4 to do; 1.5 deploy together with an agent (T-17).
+- [~] T-09 user — `team/USER_STEPS.md` Part 1. 1.1-1.4 done 2026-11-19 (AWS project eu-north-1, profile
+      `woa`; LWA profile WOA; skill created, IDs in CONTEXT). 1.5: user runs `tools/deploy.sh` (T-17).
 - [ ] T-11 user — `team/USER_STEPS.md` Part 2: skill endpoint, account linking, beta test invite for the family account (D-015).
 - [ ] T-12 user — Decide: email address for the privacy policy contact (now only GitHub issues).
 - [ ] T-13 user — Decide: keep the name "WOA: Wake On Alexa" or use a fallback (see DECISIONS D-011).
 
 ### To do (agents)
+- [ ] T-18 user — Before publishing: reset the LWA client secret (a fragment was exposed to an agent tool on 2026-11-19), then update account linking.
 - [ ] T-17 agent + user — First deploy in **eu-north-1** (D-013) and check that the Alexa console
       accepts the Stockholm ARN as Europe endpoint and that a real TurnOn reaches the Lambda.
       If not: try us-east-1 (allowed by the project SCP, see CONTEXT), last resort is the

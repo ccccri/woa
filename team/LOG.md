@@ -16,6 +16,20 @@ Template (copy it to the top, below this header block):
 
 <!-- entries below -->
 
+## 2026-11-19 — claude — Guided Amazon Developer setup in the browser; deploy script
+**Request:** The user found the written instructions confusing and asked to be guided step by step
+while the agent watches the screen (Helium browser with the Claude in Chrome extension).
+**Done:** Watched the screens and guided: LWA security profile `WOA` (privacy URL, Allowed Origins
+`https://ccccri.github.io`), skill "WOA: Wake On Alexa" (Smart Home, Provision your own, it-IT +
+en-US + en-GB), Permissions → Send Alexa Events. All IDs (public) recorded in CONTEXT. The user
+clicked every save/create button. Added `tools/deploy.sh` (asks the skill-messaging secret
+hidden, deploys to eu-north-1, prints outputs) and rewrote USER_STEPS 1.5 around it.
+**Verified:** Screens checked after each step; `bash -n tools/deploy.sh`; tests pass.
+**Not done / open:** A page search exposed a fragment of the LWA client secret to the agent tool
+(not stored) → T-18 reset before publishing. Deploy not run yet. Lesson: on Amazon console pages
+use screenshots/zoom, not `find`/`read_page`, because hidden secrets are in the DOM.
+**Next:** User runs `tools/deploy.sh`, gives `SkillFunctionArn` + `ApiUrl`; then T-10 and Part 2.
+
 ## 2026-11-19 — claude — Amazon accounts: personal developer, family account as beta tester
 **Request:** The user signed up to AWS with the personal Amazon account while the Echo devices are on
 the family account; asked if that is fine and what to do on developer.amazon.com.
